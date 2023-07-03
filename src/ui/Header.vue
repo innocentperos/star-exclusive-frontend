@@ -6,7 +6,7 @@
         </div>
 
         <div class="mx-auto"></div>
-        <ul class="flex flex-row space-x-4 text-md uppercase font-sans">
+        <ul class="hidden md:flex flex-col md:flex-row space-x-4 text-md uppercase font-sans">
             <li class=" text-indigo-700">Our Rooms</li>
             <li>Our Services</li>
             <li>Our Rooms</li>
