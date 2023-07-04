@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full space-y-2 my-4">
+  <div class="w-full space-y-2 my-4 flex flex-col">
     <label class="ml-8 tracking-wide" for="">{{ label }}</label>
     <input
       v-if="type != 'select'"

@@ -59,7 +59,11 @@ const form = ref({
   number_of_rooms: 1,
 });
 
-const emits = defineEmits(["loading","available"])
+const emits = defineEmits(["loading","available","change"])
+
+watch([form.value, form], ()=>{
+  emits("change", toRaw(form))
+})
 
 const dialog = ref({
   show: false,

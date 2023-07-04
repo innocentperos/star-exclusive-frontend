@@ -51,7 +51,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watchEffect, watch, toRaw } from "vue";
 import InputField from "../../ui/InputField.vue";
 import Btn from "../../ui/Btn.vue";
 
@@ -74,6 +74,8 @@ const IdentificatioOptions = [
   },
 ];
 
+const emits = defineEmits(["change"])
+
 const form = ref({
   first_name: "",
   last_name: "",
@@ -82,6 +84,10 @@ const form = ref({
   identification_type: "",
   identification: "",
 });
+
+watch([form.value, form], ()=>{
+  emits("change", toRaw(form))
+})
 
 const guestForm = ref({
   name: "",

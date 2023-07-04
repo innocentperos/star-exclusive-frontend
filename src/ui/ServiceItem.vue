@@ -54,14 +54,8 @@
           <div class="h-full flex flex-col p-8 lg:p-0">
             <span class="block my-auto uppercase text-3xl py-6 lg:text-6xl font-extrabold" :class="color">{{ title }}</span>
 
-          <p>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nobis et
-            non voluptatibus voluptate rem ut nulla facere voluptatem sint, eum
-            odio doloremque atque porro deserunt, iste error debitis, aut
-            dignissimos. Saepe fugiat sequi, consectetur eaque nihil ex
-            obcaecati recusandae alias possimus consequuntur quam ipsam ea
-            laborum labore impedit, deserunt nam? Exercitationem deleniti
-            impedit voluptate laudantium modi quisquam distinctio non inventore.
+          <p class="" v-html="description">
+            
           </p>
           </div>
 
@@ -92,6 +86,7 @@ import { ref } from 'vue';
         title: String,
         path:String,
         color:String,
+        description:String,
         i: Number
     })
 
