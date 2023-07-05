@@ -20,7 +20,7 @@
       ></InputField>
       <InputField
         label="Identification Issued Number"
-        v-model="form.identification"
+        v-model="form.identification_number"
       ></InputField>
     </div>
 
@@ -77,16 +77,24 @@ const IdentificatioOptions = [
 const emits = defineEmits(["change"])
 
 const form = ref({
-  first_name: "",
-  last_name: "",
-  phone_number: "",
-  email_address: "",
-  identification_type: "",
-  identification: "",
+  first_name: "Jushua",
+  last_name: "Mathew",
+  phone_number: "091767673",
+  email_address: "mathewjes@gmail.com",
+  identification_type: "international_passport",
+  identification_number: "55435357AD",
 });
 
-watch([form.value, form], ()=>{
-  emits("change", toRaw(form))
+watch([form.value], ()=>{
+  console.log("Guest changes")
+  console.table({
+    form:toRaw(form.value),
+    guests: toRaw(guests.value)
+  })
+  emits("change", {
+    form:toRaw(form.value),
+    guests: toRaw(guests.value)
+  })
 })
 
 const guestForm = ref({
@@ -94,7 +102,10 @@ const guestForm = ref({
   phone_number: "",
 });
 
-const guests = ref([]);
+const guests = ref([
+  {name : "Jushua Mark"},
+  {name : "Jushua Sarah"}
+]);
 
 function addGuest() {
   guests.value.push({

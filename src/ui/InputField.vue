@@ -1,6 +1,6 @@
 <template>
   <div class="w-full space-y-2 my-4 flex flex-col">
-    <label class="ml-8 tracking-wide" for="">{{ label }}</label>
+    <label class="ml-2 tracking-wide" for="">{{ label }}</label>
     <input
       v-if="type != 'select'"
       min="12/12/2023"

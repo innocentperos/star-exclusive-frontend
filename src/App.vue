@@ -6,6 +6,7 @@ import AboutUs from "./components/AboutUs.vue";
 import Services from "./components/Services.vue";
 import Book from "./components/Book.vue";
 import FooterVue from "./components/Footer.vue";
+import ReservationView from "./components/ReservationView.vue";
 </script>
 
 <template>
@@ -23,8 +24,9 @@ import FooterVue from "./components/Footer.vue";
     <Services/>
 
     <FooterVue/>
-    
 
+    <ReservationView/>
+    
   </div>
 </template>
 

@@ -1,11 +1,13 @@
 <template>
   <button
-    class=" border-2 font-sans tracking-wider text-center uppercase"
+    class=" border-2 relative font-sans tracking-wider text-center uppercase"
     :class="styling"
 
     @click="clicked"
   >
     <slot></slot>
+
+    
   </button>
 </template>
 

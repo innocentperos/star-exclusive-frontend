@@ -38,12 +38,12 @@
         <div
           v-for="(room, i) in roomCategories"
           :key="i"
-          @click="selectedRoomCategory = i"
+          @click="selectedRoomCategory = room.pk "
           :class="{
             'scale-95 bg-slate-700/10 hover:bg-indigo-800/10 text-black':
-              i != selectedRoomCategory,
+              room.pk != selectedRoomCategory,
             'scale-100 bg-indigo-800 text-white shadow-md':
-              i == selectedRoomCategory,
+              room.pk == selectedRoomCategory,
             'w-4/5 md:w-2/5 lg:w-1/5': roomCategories.length > 3,
             'w-4/5 lg:w-1/3 mx-auto': roomCategories.length <= 3,
           }"
@@ -74,94 +74,12 @@
       <div class="md:w-1/2 md:mx-auto my-8 mb-16">
         <button
           class="w-full border-indigo-700 hover:bg-indigo-200 duration-300 text-indigo-700 border-2 font-sans tracking-wider text-center h-[64px] rounded-tl-3xl"
-          @click="check"
+          @click="reserve"
+          v-if="isValid"
         >
           CONTINUE WITH RESERVATION
         </button>
       </div>
-    </div>
-  </section>
-
-  <section
-    class="pb-32 h-screen w-screen fixed top-0 left-0 bg-white z-50 overflow-y-auto"
-  >
-    <div
-      class="py-6 px-6 flex flex-col justify-center bg-indigo-700 text-white"
-    >
-      <span class="text-xl">45528A</span>
-      <span class="text-lg">BOOKING INFORMATION</span>
-    </div>
-
-    <div class="px-32 py-6">
-      <div class="flex flex-col">
-        <span class="text-sm">Name</span>
-        <span class="text-lg">Mathew James</span>
-      </div>
-    </div>
-
-    <div class="bg-slate-600/30 w-full h-px"></div>
-
-    <div class="px-32 py-6 flex space-x-12">
-      <div class="flex flex-col grow">
-        <span class="text-sm">Phone Number</span>
-        <span class="text-lg">090****56</span>
-      </div>
-      <div class="flex flex-col grow">
-        <span class="text-sm">EMail Address</span>
-        <span class="text-lg">ma******es@gmail.com </span>
-      </div>
-    </div>
-
-    <div class="bg-slate-600/20 w-full h-px"></div>
-
-    <ul class="px-32">
-      <span class="block py-8">Tag Along Guests</span>
-      <li
-        v-for="i in 4"
-        :key="i"
-        class="items-center flex border-b last:border-b-transparent border-b-slate-900/10"
-      >
-        <span class="px-16">{{ i }}</span>
-        <div class="py-4">
-          <div class="flex flex-col">
-            <span class="text-xs">Name</span>
-            <span class="text-md">Mathew James</span>
-          </div>
-        </div>
-      </li>
-    </ul>
-
-    <div class="bg-slate-600/20 w-full h-px"></div>
-
-    <div class="px-32">
-      <span class="block py-8">Booked Room</span>
-
-      <div class="flex flex-row-reverse">
-        
-        <div class="flex flex-col space-y-2 grow h-full">
-          <span class="text-2xl">Room 16</span>
-          <span class="text-2xl">Proffesional Suite</span>
-          <span class="text-6xl font-black mt-auto">N86,000</span>
-        </div>
-
-        <div class="relative aspect-square overflow-hidden rounded-lg h-[12rem] mr-16 grow-0">
-          <img
-            class="object-cover aboslute top-0 left-0 h-full w-full"
-            src="/src/assets/rooms/teir-5.jpg"
-            alt=""
-          />
-        </div>
-      </div>
-
-     
-    </div>
-    <div class="flex flex-col mx-32 mt-32">
-      <InputField label="Email Address" description = "Enter your email address to canccel the reservation"></InputField>
-      <InputField class="mt-2" label="Identification Number" description = "Enter the identification number you provided during the booking process"></InputField>
-
-      <Btn  color="error" class="shrink-0 mt-6 h-[60px] ">
-        Cancel Reservation
-      </Btn>
     </div>
   </section>
 </template>
@@ -172,7 +90,7 @@
 }
 </style>
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import Btn from "../ui/Btn.vue";
 import InputField from "../ui/InputField.vue";
 import { useFetch } from "../composables/useFetch";
@@ -189,9 +107,15 @@ const bookingOptions = ["Reservation", "Booking"];
 const selectedBookingOption = ref(bookingOptions[0]);
 
 const _forms = ref({
-  guest: {},
-  reservation: {},
+  guest: null,
+  reservation: null,
 });
+
+const isValid = computed(()=>{
+   if ( _forms.value.reservation && _forms.value.guest){
+    return true
+   }
+})
 
 function _loadingAvailableCategories(state) {
   loadingCategories.value = state;
@@ -206,10 +130,27 @@ function _loadedAvailableCategories(state) {
 }
 
 function copyGuestForm(form) {
-  _forms.value.guest = form;
+  console.log(form);
+  _forms.value.guest = {
+    guest: form.form,
+    guests: form.guest
+  };
 }
 function copyReservationForm(form) {
-  alert("Hello");
   _forms.value.reservation = form;
+  selectedRoomCategory = -1
 }
+
+
+function reserve(){
+  let form = {
+    ..._forms.value.guest.guest,
+    ..._forms.value.reservation,
+    room: selectedRoomCategory.value
+  }
+
+  console.log(form)
+}
+
+
 </script>

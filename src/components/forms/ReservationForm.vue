@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, toRaw } from "vue";
 import Btn from "../../ui/Btn.vue";
 import InputField from "../../ui/InputField.vue";
 import AlertDialog from "../dialogs/AlertDialog.vue";
@@ -52,17 +52,17 @@ import { useFetch } from "../../composables/useFetch";
 import { API_ENDPOINT } from "../../configs";
 
 const form = ref({
-  arrival_date: "2023-07-02",
+  arrival_date: "2023-07-06",
   arrival_time: "10:20",
-  departure_date: "2023-07-03",
+  departure_date: "2023-07-08",
   departure_time: "10:20",
   number_of_rooms: 1,
 });
 
 const emits = defineEmits(["loading","available","change"])
 
-watch([form.value, form], ()=>{
-  emits("change", toRaw(form))
+watch(form.value, ()=>{
+  emits("change",toRaw( form.value))
 })
 
 const dialog = ref({
