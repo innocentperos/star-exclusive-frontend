@@ -1,5 +1,5 @@
 <template>
-  <AlertDialog v-model="cancel_dialog_model" title="Cancel Reservation">
+  <AlertDialog v-model="searchDialogState" title="Cancel Reservation">
     
     <div>
       <InputField
@@ -11,37 +11,37 @@
 
     <template v-slot:actions>
       <div class="w-full flex justify-end space-x-4">
-        <Btn color="error" @click="toggle_cancel_dialog(false)"> Close </Btn>
-        <Btn @click="show_reservation = true"> Check </Btn>
+        <Btn color="error" @click="changeSearchDialogState(false)"> Close </Btn>
+        <Btn @click="changeViewerState(true)"> Check </Btn>
       </div>
     </template>
   </AlertDialog>
 
   <AlertDialog class="z-50" v-model="confrim_dialog" title="Confirm Request" body = "A link has been sent to your email address, click on the link to confirm the cancelation request, thank you."></AlertDialog>
   <section
-    v-if="show_reservation"
+    v-if="viewerState"
     class="h-screen w-screen fixed top-0 left-0 bg-white z-40 overflow-y-auto"
   >
     <div
       class="py-6 px-6 flex flex-row justify-between items-center bg-indigo-700 text-white"
     >
       <div class="flex flex-col justify-center">
-        <span class="text-xl">45528A</span>
+        <span class="text-xl">{{reservation.booking_id}}</span>
         <span class="text-lg">BOOKING INFORMATION </span>
       </div>
 
-      <Btn class="bg-white text-indigo-700 font-bold" @click="show_reservation = false">Close</Btn>
+      <Btn class="bg-white text-indigo-700 font-bold" @click="close_reservation">Close</Btn>
     </div>
 
     <div class="px-32 py-6 flex flex-col md:grid md:grid-cols-2 space-y-12 lg:space-y-0">
       <div class="flex flex-col grow">
         <span class="text-sm">Name</span>
-        <span class="text-lg">Mathew Jushua</span>
+        <span class="text-lg">{{ reservation.customer.first_name }} {{ reservation.customer.last_name }}</span>
       </div>
 
       <div class="flex flex-col grow">
         <span class="text-sm">Booking ID</span>
-        <span class="text-lg">45528A</span>
+        <span class="text-lg">{{ reservation.pk }}</span>
       </div>
     </div>
 
@@ -52,11 +52,11 @@
     >
       <div class="flex flex-col grow">
         <span class="text-sm">Phone Number</span>
-        <span class="text-lg">090****56</span>
+        <span class="text-lg">{{ reservation.customer.phone_number }}</span>
       </div>
       <div class="flex flex-col grow">
         <span class="text-sm">EMail Address</span>
-        <span class="text-lg">ma******es@gmail.com </span>
+        <span class="text-lg">{{ reservation.customer.email_address }} </span>
       </div>
     </div>
 
@@ -95,9 +95,9 @@
           />
         </div>
         <div class="flex flex-col space-y-2 mt-8 grow h-full px-0 md:px-16">
-          <span class="text-2xl">Room 16</span>
-          <span class="text-2xl">Proffesional Suite</span>
-          <span class="text-6xl font-black mt-auto">N86,000</span>
+          <span class="text-2xl">Room {{ reservation.room.number }}</span>
+          <span class="text-2xl">{{ reservation.room.category.title}}</span>
+          <span class="text-6xl font-black mt-auto">N{{ reservation.room.category.price }}</span>
         </div>
       </div>
     </div>
@@ -126,15 +126,17 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import AlertDialog from "../components/dialogs/AlertDialog.vue";
 import InputField from "../ui/InputField.vue";
 import Btn from "../ui/Btn.vue";
 
-import { useShareState } from "../composables/shareState";
-const { toggle_cancel_dialog, cancel_dialog_model } = useShareState();
+import { sharedReservation, sharedSearchDialog, sharedReservationDialog} from "../composables/shareState";
 
-const show_reservation = ref(false);
+const reservation = sharedReservation()
+const [searchDialogState, changeSearchDialogState] = sharedSearchDialog()
+const [viewerState, changeViewerState] = sharedReservationDialog()
+
 const confrim_dialog = ref(false)
 
 const guests = ref([
@@ -145,4 +147,5 @@ const guests = ref([
     name: "Jushua Sarah",
   },
 ]);
+
 </script>

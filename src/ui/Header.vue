@@ -16,7 +16,7 @@
       <li>Our Rooms</li>
       <li
         class="cursor-pointer hover:text-red-600"
-        @click="toggle_cancel_dialog(true)"
+        @click="show(true)"
       >
         Cancel Reservation
       </li>
@@ -25,6 +25,7 @@
 </template>
 
 <script setup>
-    import { useShareState } from "../composables/shareState";
-    const { toggle_cancel_dialog, cancel_dialog_model } = useShareState();
+    import { sharedSearchDialog } from "../composables/shareState";
+    
+    const [state, show] = sharedSearchDialog()
 </script>
