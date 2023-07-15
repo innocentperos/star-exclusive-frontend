@@ -51,9 +51,10 @@
 </template>
 
 <script setup>
-import { ref, watchEffect, watch, toRaw } from "vue";
+import { ref} from "vue";
 import InputField from "../../ui/InputField.vue";
 import Btn from "../../ui/Btn.vue";
+import {customerFormState} from "./form"
 
 const IdentificatioOptions = [
   {
@@ -76,36 +77,15 @@ const IdentificatioOptions = [
 
 const emits = defineEmits(["change"])
 
-const form = ref({
-  first_name: "Jushua",
-  last_name: "Mathew",
-  phone_number: "091767673",
-  email_address: "mathewjes@gmail.com",
-  identification_type: "international_passport",
-  identification_number: "55435357AD",
-});
-
-watch([form.value], ()=>{
-  console.log("Guest changes")
-  console.table({
-    form:toRaw(form.value),
-    guests: toRaw(guests.value)
-  })
-  emits("change", {
-    form:toRaw(form.value),
-    guests: toRaw(guests.value)
-  })
-})
+const forms = customerFormState()
+const form = forms.Customerform
 
 const guestForm = ref({
   name: "",
   phone_number: "",
 });
 
-const guests = ref([
-  {name : "Jushua Mark"},
-  {name : "Jushua Sarah"}
-]);
+const guests = forms.guestsForm
 
 function addGuest() {
   guests.value.push({

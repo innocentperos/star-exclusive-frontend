@@ -50,20 +50,11 @@ import InputField from "../../ui/InputField.vue";
 import AlertDialog from "../dialogs/AlertDialog.vue";
 import { useFetch } from "../../composables/useFetch";
 import { API_ENDPOINT } from "../../configs";
+import {reservationFormState} from "./form"
 
-const form = ref({
-  arrival_date: "2023-07-06",
-  arrival_time: "10:20",
-  departure_date: "2023-07-08",
-  departure_time: "10:20",
-  number_of_rooms: 1,
-});
+const form = reservationFormState()
 
 const emits = defineEmits(["loading","available","change"])
-
-watch(form.value, ()=>{
-  emits("change",toRaw( form.value))
-})
 
 const dialog = ref({
   show: false,

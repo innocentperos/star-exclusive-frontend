@@ -24,7 +24,7 @@
       <ReservationForm
         @loading="_loadingAvailableCategories"
         @available="_loadedAvailableCategories"
-        @change="copyReservationForm"
+        @valid = "reservationFormValid = $event"
       ></ReservationForm>
 
       <div
@@ -67,7 +67,7 @@
 
       <GuestForm
         v-if="selectedRoomCategory > -1 && loadedAvailableCategories"
-        @change="copyGuestForm"
+        @valid = "guestFormValid = $event"
       >
       </GuestForm>
 
@@ -75,12 +75,33 @@
         <button
           class="w-full border-indigo-700 hover:bg-indigo-200 duration-300 text-indigo-700 border-2 font-sans tracking-wider text-center h-[64px] rounded-tl-3xl"
           @click="reserve"
-          v-if="isValid"
+          v-show="isValid"
         >
           CONTINUE WITH RESERVATION
         </button>
       </div>
     </div>
+
+    <AlertDialog v-model="dialog.show" :title="dialog.title" :body="dialog.body">
+  </AlertDialog>
+
+  <AlertDialog v-model="dialog.booked" >
+    <template v-slot:title>
+      <h1 class="text-xl">Booking was successful</h1>
+    </template>
+    <span class="text-lg">
+        Your booking was successful, your booking id is <span class="text-indigo-700 font-bold">466627</span>
+
+      </span>
+
+      <template v-slot:actions>
+        <div class="w-full flex ">
+          <div class="mx-auto"></div>
+          <Btn class="mx-4" @click="dialog.booked = false" color="primary">View Booking</Btn>
+          <Btn @click="dialog.booked = false" color="primary">Close</Btn>
+        </div>
+      </template>
+  </AlertDialog>
   </section>
 </template>
 
@@ -90,13 +111,15 @@
 }
 </style>
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, toRaw } from "vue";
 import Btn from "../ui/Btn.vue";
 import InputField from "../ui/InputField.vue";
+import AlertDialog from "../components/dialogs/AlertDialog.vue";
 import { useFetch } from "../composables/useFetch";
-import { getRoomCover, formatPrice } from "../configs";
+import { getRoomCover, formatPrice, API_ENDPOINT } from "../configs";
 import ReservationForm from "./forms/ReservationForm.vue";
 import GuestForm from "./forms/GuestForm.vue";
+import {reservationFormState, customerFormState, verifyCustomerForm} from "./forms/form";
 
 const selectedRoomCategory = ref(-1);
 const roomCategories = ref([]);
@@ -106,15 +129,26 @@ const loadedAvailableCategories = ref(false);
 const bookingOptions = ["Reservation", "Booking"];
 const selectedBookingOption = ref(bookingOptions[0]);
 
-const _forms = ref({
-  guest: null,
-  reservation: null,
-});
+const guestForm = customerFormState().Customerform
+const guestFormValid = ref(false)
+const guestsList = customerFormState().guestsForm
+const reservationForm = reservationFormState()
+const reservationFormValid = ref(false)
+
+const dialog = ref({
+  title:"",
+  body:"",
+  show: false,
+  booked: true
+})
+
+
 
 const isValid = computed(()=>{
-   if ( _forms.value.reservation && _forms.value.guest){
+   if ( selectedRoomCategory.value > -1){
     return true
    }
+   return false
 })
 
 function _loadingAvailableCategories(state) {
@@ -129,27 +163,43 @@ function _loadedAvailableCategories(state) {
   loadedAvailableCategories.value = true;
 }
 
-function copyGuestForm(form) {
-  console.log(form);
-  _forms.value.guest = {
-    guest: form.form,
-    guests: form.guest
-  };
-}
-function copyReservationForm(form) {
-  _forms.value.reservation = form;
-  selectedRoomCategory = -1
-}
+async function reserve(){
 
+  let vstatus = verifyCustomerForm()
 
-function reserve(){
+  if (vstatus != false){
+    dialog.value.body = vstatus
+    dialog.value.title = "Incomplete Form"
+    dialog.value.show = true 
+    return
+  }
+
   let form = {
-    ..._forms.value.guest.guest,
-    ..._forms.value.reservation,
-    room: selectedRoomCategory.value
+    ...toRaw(guestForm.value),
+    ...toRaw(reservationForm.value),
+    room: selectedRoomCategory.value,
+    guests: toRaw(guestsList.value)
   }
 
   console.log(form)
+
+  try{
+
+    let response = await fetch(
+      await fetch(
+      `${API_ENDPOINT}/reservations/make_reservation/`,
+      {
+        method: "POST",
+        body: JSON.stringify(form),
+        headers: {
+          "content-type":"application/json"
+        }
+      }
+    )
+    )
+  }catch (error){
+
+  }
 }
 
 
