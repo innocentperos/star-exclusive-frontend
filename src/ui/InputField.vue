@@ -1,6 +1,6 @@
 <template>
   <div class="w-full space-y-2 my-4 flex flex-col">
-    <label class="ml-2 tracking-wide" for="">{{ label }}</label>
+	  <label class="ml-2 tracking-wide md:text-md text-sm" for="">{{ label }} <span class="text-rose-600/80 font-semibold" v-show="required==true">*</span></label>
     <input
       v-if="type != 'select'"
       min="12/12/2023"
@@ -44,7 +44,7 @@
       </div>
     </div>
 
-    <p v-if="description" class="text-sm tracking-wide px-2 pt-4">
+    <p v-if="description" class="text-xs md:text-sm tracking-wide px-2 pt-4">
       {{ description }}
     </p>
   </div>
@@ -59,6 +59,10 @@ const props = defineProps({
   error: Boolean,
   modelValue: String | Number,
   type: "text",
+  required: {
+  type:Boolean,
+  default: ()=>true
+  },
   options: {
     type: Array,
     default: () => [],

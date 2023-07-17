@@ -7,10 +7,10 @@
       ></div>
 
       <div
-        class="p-8 lg:p-16 w-3/4 lg:w-1/2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-lg bg-white flex flex-col space-y-4"
+        class="p-8 lg:p-16 w-full md:w-3/4 lg:w-1/2 absolute md:top-1/2 top-0 left-1/2 -translate-x-1/2 md:-translate-y-1/2 shadow-lg bg-white flex flex-col space-y-4"
       >
         <slot name="title">
-          <span class="text-lg">{{ title }}</span>
+          <span class="text-sm uppercase font-semibold">{{ title }}</span>
         </slot>
         <slot>
           <span>{{ body }}</span>

@@ -49,24 +49,14 @@
         <div class="p-8">
           <div class="flex flex-col">
             <span class="text-6xl font-semibold"
-              >N{{ selectedCategory < 0 ? "" : formatPrice(Categories[selectedCategory].price) }}</span
-            >
+              >N{{ selectedCategory < 0 ? "" : formatPrice(Categories[selectedCategory].price) }}
+
+	    </span>
             <span class="text-xl uppercase font-sans">Per Night</span>
           </div>
         </div>
         <div class="text-lg text-justify p-8 pt-0">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti
-          vitae veniam nobis assumenda ullam beatae omnis officiis. Molestiae
-          illum deserunt iusto aspernatur dicta expedita, adipisci est provident
-          iste non, optio reiciendis. Porro expedita ea eligendi accusantium
-          obcaecati dolore illum molestiae, rerum quibusdam veritatis impedit
-          iste eveniet reprehenderit voluptatibus culpa, perspiciatis mollitia
-          est itaque unde iure officiis? Pariatur id veritatis ipsa non. Sint
-          quos ipsam dolores fuga, itaque repellat doloremque nostrum, facilis,
-          quod voluptates commodi. Assumenda optio consectetur in at
-          repudiandae, expedita accusantium ipsum dignissimos, exercitationem
-          blanditiis officiis repellendus doloribus atque molestias voluptatum
-          fuga iusto! Voluptates enim deserunt consequatur quam illo.
+		Room description in here
         </div>
 
         <div class="p-6 py-0">

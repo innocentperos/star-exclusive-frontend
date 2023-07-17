@@ -5,8 +5,8 @@ const Customerform = ref({
   last_name: "Mathew",
   phone_number: "091767673",
   email_address: "mathewjes@gmail.com",
-  identification_type: "international_passport",
-  identification_number: "55435357AD",
+  identification_type: "",
+  identification_number: "",
 });
 
 const guestsForm = ref([]);

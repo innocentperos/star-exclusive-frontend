@@ -49,13 +49,13 @@ import {computed} from "vue";
         if (props.block){
             s["w-full"] = true
         }else{
-            s["px-8"] = true
+            s["px-3 md:px-8"] = true
         }
 
         if (props.action){
-            s["h-[64px]"] = true
+            s["h-[38px] md:h-[64px]"] = true
         }else{
-            s["py-4 text-sm"] = true
+            s["py-2 md:py-4 text-sm"] = true
         }
         return s;
     })

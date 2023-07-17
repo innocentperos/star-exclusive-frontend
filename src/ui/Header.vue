@@ -1,9 +1,9 @@
 <template>
   <div
-    class="h-24 flex items-center fixed top-0 left-0 z-30 bg-white w-screen shadow-sm px-12"
+    class="h-16 md:h-24 flex items-center fixed top-0 left-0 z-30 bg-white w-screen shadow-sm px-8 md:px-12"
   >
     <div>
-      <span class="text-2xl uppercase font-bold text-indigo-700"
+      <span class="text-lg md:text-2xl uppercase font-bold text-indigo-700"
         >Star Exclusive</span
       >
     </div>

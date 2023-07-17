@@ -73,7 +73,7 @@
         <div
           v-for="i in 5"
           :key="i"
-          class="w-[calc(100vw*0.75)] snap-always snap-x first:ml-1 last:mr-1 aspect-video first:rounded-l-md last:rounded-r-md overflow-hidden snap-center grow-0 shrink-0 relative"
+          class="w-[calc(100vw*0.95)] md:w-[calc(100vw*0.75)] h-[calc(100vh-10rem)] md:h-auto snap-always snap-x first:ml-1 last:mr-2  md:aspect-video first:rounded-l-md last:rounded-r-md overflow-hidden snap-center grow-0 shrink-0 relative"
         >
           <img
             class="object-cover w-full h-full absolute top-0 left-0"

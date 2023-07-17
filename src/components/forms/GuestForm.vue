@@ -25,14 +25,17 @@
     </div>
 
     <div>
-      <ul class="flex flex-col divide-y shadow-lg bg-slate-100 rounded-lg divide-slate-600/50 mt-6">
-        <li
-          class="pl-6 text-black flex first:rounded-t-lg last:rounded-b-lg overflow-hidden"
+	    <span class="font-bold text-xs mt-6" v-if="guests.length > 0"> People your coming with </span>
+      <ul class="flex flex-col divide-y bg-white rounded-sm divide-slate-600/10 mt-2">
+        <li class="px-6 py-4 text-black flex first:rounded-t-sm last:rounded-b-sm overflow-hidden"
           v-for="(guest, key) in guests"
           :key="key"
         >
-          <span class="my-auto"> {{ guest.name }}</span>
-          <span @click="removeGuest(key)" class="text-rose-500 text-xs ml-auto px-6 h-full cursor-pointer font-bold uppercase hover:bg-rose-200/40 py-6 duration-300"> remove</span>
+	<div class="flex flex-col my-auto space-y-1">
+          <span class="md:text-md"> {{ guest.name }}</span>
+	  <span class="text-xs md:text-sm " > {{guest.phone_number }} </span>
+	</div>
+          <span @click="removeGuest(key)" class="text-rose-500 text-xs ml-auto px-4 py-2 y-auto flex items-center justify-center cursor-pointer uppercase hover:bg-rose-200/40 py-6 duration-300"> remove</span>
         </li>
       </ul>
     </div>
@@ -45,7 +48,7 @@
         label="Contact Phone Number"
         v-model="guestForm.phone_number"
       ></InputField>
-      <Btn @click="addGuest" class="shrink-0 mt-auto mb-4"> Add Guest </Btn>
+      <Btn v-show="guestForm.name && guestForm.phone_number" @click="addGuest" class="shrink-0 mt-auto py-6 my-4"> Add Guest </Btn>
     </div>
   </div>
 </template>
@@ -99,6 +102,5 @@ function addGuest() {
 
 function removeGuest(index){
     guests.value = guests.value.filter((item, _index)=> _index!=index)
-}
 
 </script>

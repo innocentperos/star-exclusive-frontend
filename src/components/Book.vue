@@ -42,7 +42,7 @@
           :class="{
             'scale-95 bg-slate-700/10 hover:bg-indigo-800/10 text-black':
               room.pk != selectedRoomCategory,
-            'scale-100 bg-indigo-800 text-white shadow-md':
+            'scale-100 bg-slate-400 text-white shadow-md':
               room.pk == selectedRoomCategory,
             'w-4/5 md:w-2/5 lg:w-1/5': roomCategories.length > 3,
             'w-4/5 lg:w-1/3 mx-auto': roomCategories.length <= 3,
@@ -58,9 +58,10 @@
           </div>
           <div class="flex flex-col space-y-1 my-3">
             <span class="text-lg">{{ room.title }}</span>
-            <span class="text-2xl font-bold"
-              >N{{ formatPrice(room.price) }}</span
-            >
+            <span class="text-2xl font-bold">
+		    N{{ formatPrice(room.price) }}
+	    </span>
+	    <Btn> View Room </Btn>
           </div>
         </div>
       </div>
@@ -85,19 +86,23 @@
     <AlertDialog v-model="dialog.show" :title="dialog.title" :body="dialog.body">
   </AlertDialog>
 
-  <AlertDialog v-model="dialog.booked" >
+    <AlertDialog v-model="dialog.booking_failed" title="Error making reservation" body="Sorry something went wrong will trying to process your reservation request.">
+  </AlertDialog>
+
+
+  <AlertDialog v-model="dialog.booking_success" >
     <template v-slot:title>
-      <h1 class="text-xl">Booking was successful</h1>
+      <h1 class="text-lg lg:text-xl">Booking was successful</h1>
     </template>
-    <span class="text-lg">
-        Your booking was successful, your booking id is <span class="text-indigo-700 font-bold">466627</span>
+    <span class="text-md lg:text-lg">
+	    Your booking was successful, your booking id is <span class="text-indigo-700 font-bold">{{dialog.reservation_code}}</span>
 
       </span>
 
       <template v-slot:actions>
         <div class="w-full flex ">
           <div class="mx-auto"></div>
-          <Btn class="mx-4" @click="dialog.booked = false" color="primary">View Booking</Btn>
+          <Btn class="mx-4" @click="view_reservation" color="primary">View Booking</Btn>
           <Btn @click="dialog.booked = false" color="primary">Close</Btn>
         </div>
       </template>
@@ -138,11 +143,15 @@ const reservationFormValid = ref(false)
 const dialog = ref({
   title:"",
   body:"",
+  reservation_code:null,
   show: false,
-  booked: true
+  failed:false,
+  booking_success: false,
+  booking_failed:false
 })
 
-
+const reservation = ref({
+})
 
 const isValid = computed(()=>{
    if ( selectedRoomCategory.value > -1){
@@ -186,7 +195,6 @@ async function reserve(){
   try{
 
     let response = await fetch(
-      await fetch(
       `${API_ENDPOINT}/reservations/make_reservation/`,
       {
         method: "POST",
@@ -196,11 +204,25 @@ async function reserve(){
         }
       }
     )
-    )
+
+    console.log(response)
+    if (response.ok){
+
+    let reserve = await response.json()
+    reservation.value = reserve 
+
+    dialog.booking_success = true
+
+    }else {
+    	dialog.booking_failed = true
+    }
   }catch (error){
 
   }
 }
 
+function view_reservation(){
+	alert(JSON.stringify(reservation.value))
+}
 
 </script>
