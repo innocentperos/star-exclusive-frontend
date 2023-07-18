@@ -220,7 +220,7 @@ const dialog = ref({
   model: false,
   title: "",
   body: "",
-  loading: false
+  loading: false,
 });
 
 async function cancelReservation() {
@@ -230,7 +230,7 @@ async function cancelReservation() {
   }
 
   try {
-    dialog.value.loading = true
+    dialog.value.loading = true;
     const response = await fetch(
       `${API_ENDPOINT}/reservations/${reservation.value.code}/cancel_request/`,
       {
@@ -246,31 +246,36 @@ async function cancelReservation() {
       dialog.value.title = "Cancel Request Accepted";
       dialog.value.body =
         "A cancellation link has been sent to your email address, to complete the request click the link sent to your email address";
-        dialog.value.model = true
+      dialog.value.model = true;
     } else {
       switch (response.status) {
         case 400:
-        dialog.value.title = "Missing Field";
-      dialog.value.body =
-        "Please provide the email address and the identification number you used during the reservation process.";
-        dialog.value.model = true
+          dialog.value.title = "Missing Field";
+          dialog.value.body =
+            "Please provide the email address and the identification number you used during the reservation process.";
+          dialog.value.model = true;
           break;
         case 406:
-        dialog.value.title = "Mismatch detail";
-      dialog.value.body =
-        "Either the emaila ddress or identification number you provided did not match the reservation`s detail";
-        dialog.value.model = true
+          dialog.value.title = "Mismatch detail";
+          dialog.value.body =
+            "Either the emaila ddress or identification number you provided did not match the reservation`s detail";
+          dialog.value.model = true;
           break;
         default:
-        dialog.value.title = "Oops";
-      dialog.value.body =
-        "Something went wrong will processing your request, please try again later";
-        dialog.value.model = true
+          dialog.value.title = "Oops";
+          dialog.value.body =
+            "Something went wrong will processing your request, please try again later";
+          dialog.value.model = true;
           break;
       }
     }
   } catch (error) {
-    dialog.value.laoding = false
+    dialog.value.title = "Oops";
+    dialog.value.body =
+      "Something went wrong will processing your request, please make sure you have a stable internet connection and try again later";
+    dialog.value.model = true;
+  } finally {
+    dialog.value.loading = false;
   }
 }
 </script>
