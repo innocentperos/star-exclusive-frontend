@@ -1,10 +1,10 @@
 import { ref } from "vue";
 
 const Customerform = ref({
-  first_name: "Jushua",
-  last_name: "Mathew",
-  phone_number: "091767673",
-  email_address: "mathewjes@gmail.com",
+  first_name: "",
+  last_name: "",
+  phone_number: "",
+  email_address: "",
   identification_type: "",
   identification_number: "",
   requirement : ""
@@ -13,11 +13,11 @@ const Customerform = ref({
 const guestsForm = ref([]);
 
 const reservationForm = ref({
-  arrival_date: "2023-07-20",
-  arrival_time: "10:20",
-  departure_date: "2023-07-22",
-  departure_time: "10:20",
-  number_of_rooms: 1,
+  arrival_date: "",
+  arrival_time: "",
+  departure_date: "",
+  departure_time: "",
+  number_of_rooms: 0,
 });
 
 function reservationFormState() {
