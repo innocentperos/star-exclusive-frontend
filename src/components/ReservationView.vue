@@ -115,11 +115,13 @@
           label="Email Address"
           class="mt-0"
           :rounded="false"
+          v-model="cancelForm.email_address"
           description="Enter your email address to canccel the reservation"
         ></InputField>
         <InputField
           label="Identification Number"
           :rounded="false"
+          v-model="cancelForm.identification_number"
           description="Enter the identification number you provided during the booking process"
         ></InputField>
       </div>
@@ -130,6 +132,8 @@
 
       <Btn
         v-if="cancelState"
+        @click="cancelReservation"
+        :loading="dialog.loading"
         color="error"
         block
         class="shrink-0 w-full md:w-auto mt-6 mx-auto h-[60px] lg:w-1/2"
@@ -148,14 +152,15 @@
 
     <AlertDialog
       class="z-50"
-      title="Confirm Request"
-      body="A link has been sent to your email address, click on the link to confirm the cancelation request, thank you."
+      v-model="dialog.model"
+      :title="dialog.title"
+      :body="dialog.body"
     ></AlertDialog>
 
     <AlertDialog v-model="paymentFormState" no-action title="Complete Payment">
-      <div class="flex flex-col ">
+      <div class="flex flex-col">
         <div
-          class="flex justify-between mt-8 mb-4 grow h-full md:px-16 bg-indigo-700 text-white p-6  "
+          class="flex justify-between mt-8 mb-4 grow h-full md:px-16 bg-indigo-700 text-white p-6"
         >
           <div class="flex flex-col">
             <span class="text-xl mb-4"> {{ reservation.code }}</span>
@@ -173,16 +178,13 @@
 
         <div class="my-8 space-x-4 flex">
           <div class="!mx-auto"></div>
-          <Btn
-            color="success"
-            class="shrink-0 md:w-auto mx-auto h-[60px]"
-          >
+          <Btn color="success" class="shrink-0 md:w-auto mx-auto h-[60px]">
             Complete Payment
           </Btn>
           <Btn
             @click="paymentFormState = false"
             color="error"
-            class="shrink-0 md:w-auto mx-auto h-[60px] "
+            class="shrink-0 md:w-auto mx-auto h-[60px]"
           >
             Cancel
           </Btn>
@@ -203,9 +205,72 @@ import InputField from "../ui/InputField.vue";
 import Btn from "../ui/Btn.vue";
 
 import { state, reservation } from "../composables/shareState";
-import { formatPrice } from "../configs";
+import { API_ENDPOINT, formatPrice } from "../configs";
 import PaymentForm from "../ui/PaymentForm.vue";
 
 const cancelState = ref(false);
 const paymentFormState = ref(false);
+
+const cancelForm = ref({
+  email_address: "",
+  identification_number: "",
+});
+
+const dialog = ref({
+  model: false,
+  title: "",
+  body: "",
+  loading: false
+});
+
+async function cancelReservation() {
+  const form = cancelForm.value;
+  if (form.email_address == "" || form.identification_number == "") {
+    return;
+  }
+
+  try {
+    dialog.value.loading = true
+    const response = await fetch(
+      `${API_ENDPOINT}/reservations/${reservation.value.code}/cancel_request/`,
+      {
+        method: "POST",
+        body: JSON.stringify(form),
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    );
+
+    if (response.ok) {
+      dialog.value.title = "Cancel Request Accepted";
+      dialog.value.body =
+        "A cancellation link has been sent to your email address, to complete the request click the link sent to your email address";
+        dialog.value.model = true
+    } else {
+      switch (response.status) {
+        case 400:
+        dialog.value.title = "Missing Field";
+      dialog.value.body =
+        "Please provide the email address and the identification number you used during the reservation process.";
+        dialog.value.model = true
+          break;
+        case 406:
+        dialog.value.title = "Mismatch detail";
+      dialog.value.body =
+        "Either the emaila ddress or identification number you provided did not match the reservation`s detail";
+        dialog.value.model = true
+          break;
+        default:
+        dialog.value.title = "Oops";
+      dialog.value.body =
+        "Something went wrong will processing your request, please try again later";
+        dialog.value.model = true
+          break;
+      }
+    }
+  } catch (error) {
+    dialog.value.laoding = false
+  }
+}
 </script>
