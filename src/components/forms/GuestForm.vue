@@ -1,17 +1,23 @@
 <template>
   <div class="flex lg:px-32 flex-col px-4">
-    <div class="flex flex-col lg:flex-row justify-center lg:space-x-4 my-4">
+    <div
+      class="flex flex-col lg:flex-row justify-center lg:space-x-4 my-4 px-4"
+    >
       <InputField label="First Name" v-model="form.first_name"></InputField>
       <InputField label="Last Name" v-model="form.last_name"></InputField>
     </div>
-    <div class="flex flex-col lg:flex-row justify-center lg:space-x-4 my-2">
+    <div
+      class="flex flex-col lg:flex-row justify-center lg:space-x-4 my-2 px-4"
+    >
       <InputField label="Phone Number" v-model="form.phone_number"></InputField>
       <InputField
         label="Email Address"
         v-model="form.email_address"
       ></InputField>
     </div>
-    <div class="flex flex-col lg:flex-row justify-center lg:space-x-4 my-2">
+    <div
+      class="flex flex-col lg:flex-row justify-center lg:space-x-4 my-2 px-4"
+    >
       <InputField
         type="select"
         label="Identification Type"
@@ -24,40 +30,63 @@
       ></InputField>
     </div>
 
-    <div>
-	    <span class="font-bold text-xs mt-6" v-if="guests.length > 0"> People your coming with </span>
-      <ul class="flex flex-col divide-y bg-white rounded-sm divide-slate-600/10 mt-2">
-        <li class="px-6 py-4 text-black flex first:rounded-t-sm last:rounded-b-sm overflow-hidden"
+    <div class="px-4">
+      <span class="font-bold text-xs mt-6" v-if="guests.length > 0">
+        People your coming with
+      </span>
+      <ul
+        class="flex flex-col divide-y bg-white rounded-sm divide-slate-600/10 mt-2"
+      >
+        <li
+          class="px-6 py-4 text-black flex first:rounded-t-sm last:rounded-b-sm overflow-hidden"
           v-for="(guest, key) in guests"
           :key="key"
         >
-	<div class="flex flex-col my-auto space-y-1">
-          <span class="md:text-md"> {{ guest.name }}</span>
-	  <span class="text-xs md:text-sm " > {{guest.phone_number }} </span>
-	</div>
-          <span @click="removeGuest(key)" class="text-rose-500 text-xs ml-auto px-4 py-2 y-auto flex items-center justify-center cursor-pointer uppercase hover:bg-rose-200/40 py-6 duration-300"> remove</span>
+          <div class="flex flex-col my-auto space-y-1">
+            <span class="md:text-md"> {{ guest.name }}</span>
+            <span class="text-xs md:text-sm"> {{ guest.phone_number }} </span>
+          </div>
+          <span
+            @click="removeGuest(key)"
+            class="text-rose-500 text-xs ml-auto px-4 y-auto flex items-center justify-center cursor-pointer uppercase hover:bg-rose-200/40 py-6 duration-300"
+          >
+            remove</span
+          >
         </li>
       </ul>
     </div>
 
     <div
-      class="flex flex-col md:flex-col lg:flex-row justify-center lg:space-x-4 my-4"
+      class="flex flex-col md:flex-col lg:flex-row justify-center lg:space-x-4 my-4 px-4"
     >
       <InputField label="Name of Guest" v-model="guestForm.name"></InputField>
       <InputField
         label="Contact Phone Number"
         v-model="guestForm.phone_number"
       ></InputField>
-      <Btn v-show="guestForm.name && guestForm.phone_number" @click="addGuest" class="shrink-0 mt-auto py-6 my-4"> Add Guest </Btn>
+      <Btn
+        v-show="guestForm.name && guestForm.phone_number"
+        @click="addGuest"
+        class="shrink-0 !mt-4 !my-8"
+      >
+        Add Guest
+      </Btn>
     </div>
+
+    
+    <div class="px-4">
+        <textarea class="w-full shadow-md px-8 py-4 outline-none border-2 border-black/40  hover:border-indigo-600"
+        v-model="form.requirement"
+      ></textarea>
+      </div>
   </div>
 </template>
 
 <script setup>
-import { ref} from "vue";
+import { ref } from "vue";
 import InputField from "../../ui/InputField.vue";
 import Btn from "../../ui/Btn.vue";
-import {customerFormState} from "./form"
+import { customerFormState } from "./form";
 
 const IdentificatioOptions = [
   {
@@ -78,17 +107,17 @@ const IdentificatioOptions = [
   },
 ];
 
-const emits = defineEmits(["change"])
+const emits = defineEmits(["change"]);
 
-const forms = customerFormState()
-const form = forms.Customerform
+const forms = customerFormState();
+const form = forms.Customerform;
 
 const guestForm = ref({
   name: "",
   phone_number: "",
 });
 
-const guests = forms.guestsForm
+const guests = forms.guestsForm;
 
 function addGuest() {
   guests.value.push({
@@ -100,7 +129,7 @@ function addGuest() {
   guestForm.value.phone_number = "";
 }
 
-function removeGuest(index){
-    guests.value = guests.value.filter((item, _index)=> _index!=index)
-
+function removeGuest(index) {
+  guests.value = guests.value.filter((item, _index) => _index != index);
+}
 </script>

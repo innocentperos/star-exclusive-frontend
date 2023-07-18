@@ -1,33 +1,6 @@
 import { ref, computed } from "vue";
 
-const dialogs = ref({
-  searchBooking: false,
-  reservationDIalog: false,
-});
-
-function sharedSearchDialog() {
-  return [
-    computed(() => {
-      return dialogs.value.searchBooking;
-    }),
-    function (state) {
-      dialogs.value.searchBooking = state;
-    },
-  ];
-}
-
-function sharedReservationDialog() {
-    return [
-      computed(() => {
-        return dialogs.value.reservationDIalog;
-      }),
-      function (state) {
-        dialogs.value.reservationDIalog = state;
-      },
-    ];
-  }
-
-const reservation = ref({
+const __reservation = ref({
   pk: "1",
   booking_id:"122",
   customer: {
@@ -49,8 +22,19 @@ const reservation = ref({
   },
 });
 
-function sharedReservation() {
- return reservation
+const state = ref(false)
+
+function viewReservation(_reservation){
+  __reservation.value = _reservation
+  state.value = true
 }
 
-export { sharedReservation, sharedReservationDialog, sharedSearchDialog };
+const reservation = computed(()=>{
+  return __reservation.value
+})
+
+export {
+  state,
+  reservation,
+  viewReservation
+}

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-screen min-h-screen grid grid-cols-[8rem,1fr,1fr,8rem] overflow-x-hidden"
+    class="w-screen min-h-screen grid grid-cols-[8rem,1fr,1fr,8rem] overflow-x-hidden px-4 lg:px-0"
   >
     <div class="col-start-1 col-end-5 py-8 flex items-center justify-center">
       <!-- <div class="w-full h-2 bg-indigo-600/30 rounded-r-md"></div> -->

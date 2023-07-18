@@ -7,14 +7,15 @@ const Customerform = ref({
   email_address: "mathewjes@gmail.com",
   identification_type: "",
   identification_number: "",
+  requirement : ""
 });
 
 const guestsForm = ref([]);
 
 const reservationForm = ref({
-  arrival_date: "2023-07-16",
+  arrival_date: "2023-07-20",
   arrival_time: "10:20",
-  departure_date: "2023-07-19",
+  departure_date: "2023-07-22",
   departure_time: "10:20",
   number_of_rooms: 1,
 });

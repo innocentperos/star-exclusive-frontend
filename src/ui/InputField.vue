@@ -4,9 +4,10 @@
     <input
       v-if="type != 'select'"
       min="12/12/2023"
-      class="w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600"
+      class="w-full shadow-md px-8 py-4 outline-none border-2 border-black/40  hover:border-indigo-600"
       :class="{
         '!border-rose-600 !text-rose-600': props.error,
+        'rounded-md': props.rounded
       }"
       :type="type"
       :value="modelValue"
@@ -15,19 +16,24 @@
 
     <div
       v-else
-      class="w-full bg-white shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600 relative cursor-pointer"
+      class="w-full bg-white shadow-md px-8 py-4 outline-none border-2 border-black/40 hover:border-indigo-600 relative cursor-pointer"
+      :class="{
+        '!border-rose-600 !text-rose-600': props.error,
+        'rounded-md': props.rounded
+      }"
+
       @click="showOptions = !showOptions"
     >
       <span>{{
-        selectedOption != undefined ? getOptionTitle(selectedOption) : "Nothing selected"
+        selectedOption != undefined ? getOptionTitle(selectedOption) : "*"
       }}</span>
 
       <div
-        class="fixed z-40 top-0 left-0 w-screen h-screen bg-black/40"
+        class="fixed z-40 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen h-screen bg-black/20"
         :class="{ hidden: !showOptions }"
       ></div>
       <div
-        class="absolute -left-1 right-0 bottom-full z-40 w-full md:w-[80%] lg:w-[120%] bg-white mb-2 shadow-lg overflow-y-auto border-2 rounded-md border-indigo-600"
+        class="absolute max-h-[200px] -left-1 right-0 bottom-full z-40 w-full md:w-[80%] lg:w-[120%] bg-white mb-2 shadow-lg overflow-y-auto border-2 rounded-md border-indigo-600"
         :class="{ hidden: !showOptions }"
       >
         <ul class="flex flex-col">
@@ -59,6 +65,10 @@ const props = defineProps({
   error: Boolean,
   modelValue: String | Number,
   type: "text",
+  rounded: {
+    type: Boolean,
+    default: () => true
+  },
   required: {
   type:Boolean,
   default: ()=>true

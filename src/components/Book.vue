@@ -24,7 +24,6 @@
       <ReservationForm
         @loading="_loadingAvailableCategories"
         @available="_loadedAvailableCategories"
-        @valid = "reservationFormValid = $event"
       ></ReservationForm>
 
       <div
@@ -38,7 +37,7 @@
         <div
           v-for="(room, i) in roomCategories"
           :key="i"
-          @click="selectedRoomCategory = room.pk "
+          @click="selectedRoomCategory = room.pk"
           :class="{
             'scale-95 bg-slate-700/10 hover:bg-indigo-800/10 text-black':
               room.pk != selectedRoomCategory,
@@ -59,54 +58,68 @@
           <div class="flex flex-col space-y-1 my-3">
             <span class="text-lg">{{ room.title }}</span>
             <span class="text-2xl font-bold">
-		    N{{ formatPrice(room.price) }}
-	    </span>
-	    <Btn> View Room </Btn>
+              N{{ formatPrice(room.price) }}
+            </span>
+            <Btn> View Room </Btn>
           </div>
         </div>
       </div>
 
       <GuestForm
         v-if="selectedRoomCategory > -1 && loadedAvailableCategories"
-        @valid = "guestFormValid = $event"
+        @valid="guestFormValid = $event"
       >
       </GuestForm>
 
-      <div class="md:w-1/2 md:mx-auto my-8 mb-16">
-        <button
-          class="w-full border-indigo-700 hover:bg-indigo-200 duration-300 text-indigo-700 border-2 font-sans tracking-wider text-center h-[64px] rounded-tl-3xl"
+
+      <div class="w-full md:w-1/2 px-6 md:mx-auto my-8 mb-16">
+        <Btn
           @click="reserve"
           v-show="isValid"
+          :action="true"
+          :loading="successReservationDialog.loading"
+          :block="true"
+          :curved="true"
         >
           CONTINUE WITH RESERVATION
-        </button>
+      </Btn>
       </div>
     </div>
 
-    <AlertDialog v-model="dialog.show" :title="dialog.title" :body="dialog.body">
-  </AlertDialog>
+    <AlertDialog
+      v-model="dialog.show"
+      :title="dialog.title"
+      :body="dialog.body"
+    >
+    </AlertDialog>
 
-    <AlertDialog v-model="dialog.booking_failed" title="Error making reservation" body="Sorry something went wrong will trying to process your reservation request.">
-  </AlertDialog>
+    <AlertDialog
+      v-model="successReservationDialog.model"
+      title="Reservation Successful"
+      no-action
+    >
+      <div class="flex flex-col">
+        <span v-if="!dialog.booking_payment" class="text-md md:text-lg ">
+          Your booking was successful, your booking id is
+          <span class="text-indigo-700 font-bold">{{
+            successReservationDialog.code
+          }}</span>
+          <br />
+          <br />
+          The full detail of the reservation has been sent to your email address
+          {{ successReservationDialog.email_address}}
+        </span>
 
-
-  <AlertDialog v-model="dialog.booking_success" >
-    <template v-slot:title>
-      <h1 class="text-lg lg:text-xl">Booking was successful</h1>
-    </template>
-    <span class="text-md lg:text-lg">
-	    Your booking was successful, your booking id is <span class="text-indigo-700 font-bold">{{dialog.reservation_code}}</span>
-
-      </span>
-
-      <template v-slot:actions>
-        <div class="w-full flex ">
+        <div class="w-full flex space-x-4 p-8 lg:p-16">
           <div class="mx-auto"></div>
-          <Btn class="mx-4" @click="view_reservation" color="primary">View Booking</Btn>
-          <Btn @click="dialog.booked = false" color="primary">Close</Btn>
+          <Btn @click="view_reservation" color="primary">View Reservation</Btn>
+
+          <Btn @click="successReservationDialog = false" color="primary"
+            >Close</Btn
+          >
         </div>
-      </template>
-  </AlertDialog>
+      </div>
+    </AlertDialog>
   </section>
 </template>
 
@@ -118,13 +131,16 @@
 <script setup>
 import { computed, ref, toRaw } from "vue";
 import Btn from "../ui/Btn.vue";
-import InputField from "../ui/InputField.vue";
 import AlertDialog from "../components/dialogs/AlertDialog.vue";
-import { useFetch } from "../composables/useFetch";
 import { getRoomCover, formatPrice, API_ENDPOINT } from "../configs";
 import ReservationForm from "./forms/ReservationForm.vue";
 import GuestForm from "./forms/GuestForm.vue";
-import {reservationFormState, customerFormState, verifyCustomerForm} from "./forms/form";
+import {
+  reservationFormState,
+  customerFormState,
+  verifyCustomerForm,
+} from "./forms/form";
+import {viewReservation} from "../composables/shareState";
 
 const selectedRoomCategory = ref(-1);
 const roomCategories = ref([]);
@@ -134,31 +150,33 @@ const loadedAvailableCategories = ref(false);
 const bookingOptions = ["Reservation", "Booking"];
 const selectedBookingOption = ref(bookingOptions[0]);
 
-const guestForm = customerFormState().Customerform
-const guestFormValid = ref(false)
-const guestsList = customerFormState().guestsForm
-const reservationForm = reservationFormState()
-const reservationFormValid = ref(false)
+const guestForm = customerFormState().Customerform;
+const guestFormValid = ref(false);
+const guestsList = customerFormState().guestsForm;
+const reservationForm = reservationFormState();
+const reservationFormValid = ref(false);
 
 const dialog = ref({
-  title:"",
-  body:"",
-  reservation_code:null,
+  title: "",
+  body: "",
   show: false,
-  failed:false,
-  booking_success: false,
-  booking_failed:false
+});
+
+const successReservationDialog = ref({
+  model: false,
+  code:"",
+  email_address: "",
+  loading: false
 })
 
-const reservation = ref({
-})
+const reservation = ref({})
 
-const isValid = computed(()=>{
-   if ( selectedRoomCategory.value > -1){
-    return true
-   }
-   return false
-})
+const isValid = computed(() => {
+  if (selectedRoomCategory.value > -1) {
+    return true;
+  }
+  return false;
+});
 
 function _loadingAvailableCategories(state) {
   loadingCategories.value = state;
@@ -172,57 +190,63 @@ function _loadedAvailableCategories(state) {
   loadedAvailableCategories.value = true;
 }
 
-async function reserve(){
+async function reserve() {
+  let vstatus = verifyCustomerForm();
 
-  let vstatus = verifyCustomerForm()
-
-  if (vstatus != false){
-    dialog.value.body = vstatus
-    dialog.value.title = "Incomplete Form"
-    dialog.value.show = true 
-    return
+  if (vstatus != false) {
+    dialog.value.body = vstatus;
+    dialog.value.title = "Incomplete Form";
+    dialog.value.show = true;
+    return;
   }
 
   let form = {
     ...toRaw(guestForm.value),
     ...toRaw(reservationForm.value),
     room: selectedRoomCategory.value,
-    guests: toRaw(guestsList.value)
-  }
+    guests: toRaw(guestsList.value),
+  };
 
-  console.log(form)
+  console.log(form);
 
-  try{
-
+  try {
+    successReservationDialog.value.loading = true
     let response = await fetch(
       `${API_ENDPOINT}/reservations/make_reservation/`,
       {
         method: "POST",
         body: JSON.stringify(form),
         headers: {
-          "content-type":"application/json"
-        }
+          "content-type": "application/json",
+        },
       }
-    )
+    );
 
-    console.log(response)
-    if (response.ok){
+    console.log(response.ok);
+    if (response.ok == true) {
+      let reserve = await response.json();
 
-    let reserve = await response.json()
-    reservation.value = reserve 
+      reservation.value = reserve;
 
-    dialog.booking_success = true
+      successReservationDialog.value.code = reserve["code"];
+      successReservationDialog.value.email_address = reserve["customer"]["email_address"];
+      successReservationDialog.value.model = true 
 
-    }else {
-    	dialog.booking_failed = true
+    } else {
+      dialog.value.title = "Oops"
+      dialog.value.body="Sorry something went wrong will trying to process your reservation request."
+      dialog.value.show = true
     }
-  }catch (error){
-
+  } catch (error) {
+    dialog.value.title = "Oops"
+      dialog.value.body="We could not communicate to the server, make sure you have a stable internet connect."
+      dialog.value.show = true
+  }finally{
+    successReservationDialog.value.loading = false
   }
 }
 
-function view_reservation(){
-	alert(JSON.stringify(reservation.value))
+function view_reservation() {
+  viewReservation(reservation.value)
 }
-
 </script>
